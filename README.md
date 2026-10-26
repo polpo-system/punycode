@@ -1,7 +1,42 @@
 # Punycode and internationalized host names
 
 Native Oberon-2 modules for RFC 3492 Punycode, Unicode NFC and checked UTF-8
-DNS host names. XMPP and the `agena` Gemini server use the same domain-name
+DNS host names.
+
+## In polpo
+
+This repository is the package punycode of [polpo](https://github.com/polpo-system/polpo). Its
+first commit is the port in [voc](https://github.com/norayr/voc) (src/ports/punycode) as it
+is; the commits after it adapt it to polpo.
+
+```
+portia.Install punycode
+```
+
+It runs on every port of polpo. The modules Punycode, UnicodeNFC and IDNA are those of voc.
+voc's generated IDNAMapping and IDNAData keep their tables in string constants of up to 768
+characters, 247 and 126 KB of them, more than the polpo compilers take (strings of fewer than 128
+characters, 16 KB in a module). polpo's versions of the two (`polpo/src`) have the same
+interface and read the same numbers, six hexadecimal digits each, from `IDNAMapping.txt` and
+`IDNAData.txt` (`polpo/data`, installed in share/) when they are loaded. `IDNATables.Extract`
+(`polpo/tools`) writes these files from the string constants of the generated modules:
+
+    IDNATables.Extract IDNAMapping.Mod IDNAMapping.txt
+    IDNATables.Extract IDNAData.Mod IDNAData.txt
+
+The tests, run by `portia.Install /t punycode`:
+
+    PunycodeTests.Run          TestPunycode and voc's TestIDNA (38 host names)
+    PunycodeVectors.Run requests.txt output.txt
+                               the 47844 requests of voc's conformance check (all Unicode 16.0
+                               IDNA fixtures, domain names, RFC 3492 samples, Punycode and NFC
+                               comparisons), each answered and compared with the answer of voc's
+                               DomainVectors, which tests/check-vectors.py checked against its
+                               reference; `polpo/test/vectors.tar.gz` has both files
+
+agena, the Gemini server of polpo, prepares its host names with IDNA.Names.
+
+The text below is the readme of the voc port. XMPP and the `agena` Gemini server use the same domain-name
 preparation. The modules use the VOC runtime and need no additional libraries.
 
 ## Build and test
