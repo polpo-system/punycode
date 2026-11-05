@@ -10,7 +10,7 @@ MODULE PunycodeVectors;  (* the 47844 vectors of voc's conformance check, agains
    each, which check-vectors.py found equal to those of its reference. Run answers each request
    as DomainVectors does and compares the answer with the line of output.txt. *)
 
-IMPORT Files, Texts, out, IDNA, Punycode, UnicodeNFC;
+IMPORT Files, Texts, Out, IDNA, Punycode, UnicodeNFC;
 
 CONST Max = 16384;
 
@@ -102,10 +102,10 @@ VAR A: Texts.Reader; rname, oname: ARRAY 256 OF CHAR; f, g: Files.File; R, S: Fi
 BEGIN
   Texts.OpenArgs(A);
   IF ~Texts.Arg(A, rname) OR ~Texts.Arg(A, oname) THEN
-    out.String("usage: PunycodeVectors.Run requests.txt output.txt"); out.Ln; RETURN
+    Out.String("usage: PunycodeVectors.Run requests.txt output.txt"); Out.Ln; RETURN
   END;
   f := Files.Old(rname); g := Files.Old(oname);
-  IF (f = NIL) OR (g = NIL) THEN out.String("FAIL: no "); out.String(rname); out.String(" or "); out.String(oname); out.Ln; RETURN END;
+  IF (f = NIL) OR (g = NIL) THEN Out.String("FAIL: no "); Out.String(rname); Out.String(" or "); Out.String(oname); Out.Ln; RETURN END;
   Files.Set(R, f, 0); Files.Set(S, g, 0); checks := 0; failed := 0;
   more := Line(R, request);
   WHILE more DO
@@ -115,14 +115,14 @@ BEGIN
     IF answer # expected THEN
       INC(failed);
       IF failed <= 10 THEN
-        out.String("FAIL "); out.Int(checks, 0); out.String(": "); out.String(request); out.Ln;
-        out.String("  answer   "); out.String(answer); out.Ln;
-        out.String("  expected "); out.String(expected); out.Ln
+        Out.String("FAIL "); Out.Int(checks, 0); Out.String(": "); Out.String(request); Out.Ln;
+        Out.String("  answer   "); Out.String(answer); Out.Ln;
+        Out.String("  expected "); Out.String(expected); Out.Ln
       END
     END;
     more := Line(R, request)
   END;
-  out.String("PunycodeVectors: "); out.Int(checks, 0); out.String(" checks, "); out.Int(failed, 0); out.String(" failed"); out.Ln
+  Out.String("PunycodeVectors: "); Out.Int(checks, 0); Out.String(" checks, "); Out.Int(failed, 0); Out.String(" failed"); Out.Ln
 END Run;
 
 END PunycodeVectors.

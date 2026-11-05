@@ -10,7 +10,7 @@ MODULE IDNATables;  (* the tables of IDNAMapping and IDNAData as data files for 
    writes the strings of the constants d0, d1, ... one after the other, in the order of their
    numbers, into the data file. *)
 
-IMPORT Files, Texts, out;
+IMPORT Files, Texts, Out;
 
 CONST Max = 4096;  (* constants *)
 
@@ -22,12 +22,12 @@ VAR A: Texts.Reader; src, dst: ARRAY 256 OF CHAR; f, g: Files.File; R, W: Files.
 BEGIN
   Texts.OpenArgs(A);
   IF ~Texts.Arg(A, src) OR ~Texts.Arg(A, dst) THEN
-    out.String("usage: IDNATables.Extract IDNAMapping.Mod IDNAMapping.txt"); out.Ln;
-    out.String("  writes the table strings d0, d1, ... of a generated module into a data file"); out.Ln;
+    Out.String("usage: IDNATables.Extract IDNAMapping.Mod IDNAMapping.txt"); Out.Ln;
+    Out.String("  writes the table strings d0, d1, ... of a generated module into a data file"); Out.Ln;
     RETURN
   END;
   f := Files.Old(src);
-  IF f = NIL THEN out.String(src); out.String(" not found"); out.Ln; RETURN END;
+  IF f = NIL THEN Out.String(src); Out.String(" not found"); Out.Ln; RETURN END;
   i := 0; WHILE i < Max DO pos[i] := -1; INC(i) END;
   (* find  d<number> = "  at the start of a line, after two blanks *)
   Files.Set(R, f, 0); p := 0AX; n := -1; at := 0; ok := TRUE;
@@ -56,9 +56,9 @@ BEGIN
     END;
     p := c; Files.Read(R, c); INC(at)
   END;
-  IF ~ok OR (n < 0) THEN out.String(src); out.String(": no table strings d0, d1, ..."); out.Ln; RETURN END;
+  IF ~ok OR (n < 0) THEN Out.String(src); Out.String(": no table strings d0, d1, ..."); Out.Ln; RETURN END;
   i := 0; WHILE (i <= n) & (pos[i] >= 0) DO INC(i) END;
-  IF i <= n THEN out.String(src); out.String(": d"); out.Int(i, 0); out.String(" is missing"); out.Ln; RETURN END;
+  IF i <= n THEN Out.String(src); Out.String(": d"); Out.Int(i, 0); Out.String(" is missing"); Out.Ln; RETURN END;
   g := Files.New(dst); Files.Set(W, g, 0); total := 0; i := 0;
   WHILE i <= n DO
     Files.Set(R, f, pos[i]); k := 0;
@@ -66,8 +66,8 @@ BEGIN
     INC(total, len[i]); INC(i)
   END;
   Files.Register(g); Files.Close(g);
-  out.String(dst); out.String(": "); out.Int(n + 1, 0); out.String(" strings, ");
-  out.Int(total, 0); out.String(" digits, "); out.Int(total DIV 6, 0); out.String(" numbers"); out.Ln
+  Out.String(dst); Out.String(": "); Out.Int(n + 1, 0); Out.String(" strings, ");
+  Out.Int(total, 0); Out.String(" digits, "); Out.Int(total DIV 6, 0); Out.String(" numbers"); Out.Ln
 END Extract;
 
 END IDNATables.

@@ -4,11 +4,11 @@ MODULE PunycodeTests;  (* loksh PunycodeTests.Run: the test programs of voc's pu
   and write a line when all their checks passed; a failed assertion stops them with a trap.
   Importing them runs the bodies when PunycodeTests is loaded. *)
 
-IMPORT TestPunycode, TestIDNA, out;
+IMPORT TestPunycode, TestIDNA, Out;
 
 PROCEDURE Run*;
 BEGIN
-  out.String("PunycodeTests: 2 test modules passed"); out.Ln
+  Out.String("PunycodeTests: 2 test modules passed"); Out.Ln
 END Run;
 
 END PunycodeTests.
